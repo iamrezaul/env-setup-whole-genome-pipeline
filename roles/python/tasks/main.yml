@@ -1,0 +1,40 @@
+---
+  - name: Ensure dependencies are installed
+    yum: name={{ item }} state=present
+    with_items:
+        - zlib-devel
+        - bzip2-devel
+        - openssl-devel
+        - ncurses-devel
+        - readline-devel
+        - pcre-devel
+        - curl-devel
+        - sqlite-devel
+
+  - name: create application directory (owned by application_user)
+    file: path={{ application_deploy_to }} state=directory owner={{ application_user }} group={{ application_group }}
+
+  - name: Download Python
+    get_url: # url=https://www.python.org/ftp/python/{{ python_version }}/Python-{{ python_version}}.tgz 
+        url: "https://www.python.org/ftp/python/{{ python_version }}/Python-{{ python_version }}.tgz"
+        dest: "{{ application_deploy_to }}/Python-{{ python_version }}.tar"
+
+  - name: Unpack Python
+    unarchive:
+        src: "{{ application_deploy_to }}/Python-{{ python_version }}.tar"
+        dest: "{{ application_deploy_to }}"
+        copy: no
+
+  - name: Grant permissions
+    shell: cd "{{ application_deploy_to }}" && {{ item }}
+    with_items:
+        - chown -R {{ application_user }}:{{ application_group }} Python-{{ python_version }}
+        - chmod 755 -R Python-{{ python_version }}
+
+  - name: Configure, compile and install Python
+    shell: cd "{{ application_deploy_to }}/Python-{{ python_version }}" && {{ item }}
+    with_items:
+        - ./configure --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
+        - make
+        - make altinstall
+
