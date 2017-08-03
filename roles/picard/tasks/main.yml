@@ -1,0 +1,13 @@
+---
+  - name: Check if picard-tools already available
+    stat:
+        path: "{{ application_deploy_to }}/picard-tools-{{ picard_version }}/ViewSam.jar"
+    register: picard
+
+  - name: Download and unarchive picard-tools-{{ samtools_version }}
+    unarchive:
+        src: "https://sourceforge.net/projects/picard/files/picard-tools/1.119/picard-tools-{{ picard_version }}.zip"
+        dest: "{{ application_deploy_to }}"
+        validate_certs: no
+        remote_src: true
+    when: not picard.stat.exists

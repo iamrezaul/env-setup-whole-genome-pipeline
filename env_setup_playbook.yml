@@ -10,8 +10,10 @@
         python_version: 3.6.2
         fastqc_version: 0.11.5
         samtools_version: 1.2
+        picard_version: 1.119
         local_user_key_path: /Users/mis05/.ssh/
     roles:
         - python
         - fastqc
         - samtools
+        - picard
