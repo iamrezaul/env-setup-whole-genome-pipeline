@@ -1,0 +1,25 @@
+---
+  - name: Check if fastqc already available
+    stat:
+        path: "{{ application_deploy_to }}/FastQC/fastqc"
+    register: fastqc
+
+  - name: Download and unzip FastQC
+    unarchive:
+        src: "http://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc_v{{ fastqc_version }}.zip"
+        dest: "{{ application_deploy_to }}"
+        remote_src: true
+    when: not fastqc.stat.exists
+
+  - name: Grant permission to fastqc script
+    file:
+        path: "{{ application_deploy_to }}/FastQC/fastqc"
+        mode: 0755
+    when: fastqc.stat.exists
+
+  - name: Create symlink to fastqc script
+    file:
+        src: "{{ application_deploy_to }}/FastQC/fastqc"
+        dest: "/usr/local/bin/fastqc"
+        state: link
+    when: fastqc.stat.exists

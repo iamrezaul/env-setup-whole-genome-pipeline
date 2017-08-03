@@ -12,4 +12,4 @@
         local_user_key_path: /Users/mis05/.ssh/
     roles:
         - python
-        # - fastqc
+        - fastqc
