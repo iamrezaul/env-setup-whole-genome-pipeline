@@ -1,0 +1,33 @@
+---
+  - name: Check if samtools already available
+    stat:
+        path: /usr/local/bin/samtools
+    register: samtools
+
+  - name: Download and unarchive Samtools-{{ samtools_version }}
+    unarchive:
+        src: "https://sourceforge.net/projects/samtools/files/samtools/1.2/samtools-{{ samtools_version }}.tar.bz2"
+        dest: "{{ application_deploy_to }}"
+        validate_certs: no
+        remote_src: true
+    when: not samtools.stat.exists
+
+  - name: Compile and install Samtools-{{ samtools_version }}
+    shell: cd "{{ application_deploy_to }}/samtools-{{ samtools_version }}" && {{ item }}
+    with_items:
+        - make
+        - make install
+    when: not samtools.stat.exists
+
+  #  - name: Grant permission to fastqc script
+  #    file:
+  #        path: "{{ application_deploy_to }}/FastQC/fastqc"
+  #        mode: 0755
+  #    when: fastqc.stat.exists
+  #
+  #  - name: Create symlink to fastqc script
+  #    file:
+  #        src: "{{ application_deploy_to }}/FastQC/fastqc"
+  #        dest: "/usr/local/bin/fastqc"
+  #        state: link
+  #    when: fastqc.stat.exists
