@@ -18,16 +18,3 @@
         - make
         - make install
     when: not samtools.stat.exists
-
-  #  - name: Grant permission to fastqc script
-  #    file:
-  #        path: "{{ application_deploy_to }}/FastQC/fastqc"
-  #        mode: 0755
-  #    when: fastqc.stat.exists
-  #
-  #  - name: Create symlink to fastqc script
-  #    file:
-  #        src: "{{ application_deploy_to }}/FastQC/fastqc"
-  #        dest: "/usr/local/bin/fastqc"
-  #        state: link
-  #    when: fastqc.stat.exists
