@@ -11,5 +11,5 @@
         fastqc_version: 0.11.5
         local_user_key_path: /Users/mis05/.ssh/
     roles:
-        # - python
-        - fastqc
+        - python
+        # - fastqc

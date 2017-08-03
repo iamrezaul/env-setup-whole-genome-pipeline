@@ -18,17 +18,11 @@
   - name: create application directory (owned by application_user)
     file: path={{ application_deploy_to }} state=directory owner={{ application_user }} group={{ application_group }}
 
-  - name: Download Python
-    get_url: # url=https://www.python.org/ftp/python/{{ python_version }}/Python-{{ python_version}}.tgz 
-        url: "https://www.python.org/ftp/python/{{ python_version }}/Python-{{ python_version }}.tgz"
-        dest: "{{ application_deploy_to }}/Python-{{ python_version }}.tar"
-    when: not python.stat.exists
-
-  - name: Unpack Python
+  - name: Download & unpack Python
     unarchive:
-        src: "{{ application_deploy_to }}/Python-{{ python_version }}.tar"
+        src: "https://www.python.org/ftp/python/{{ python_version }}/Python-{{ python_version }}.tgz"
         dest: "{{ application_deploy_to }}"
-        copy: no
+        remote_src: true
     when: not python.stat.exists
 
   - name: Grant permissions
