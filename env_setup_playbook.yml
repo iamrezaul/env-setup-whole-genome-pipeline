@@ -4,6 +4,7 @@
     vars:
         application_user: root
         application_group: root
+        application_name: whole_genome_pipeline
         application_deploy_to: /data/
         python_version: 3.6.2
         local_user_key_path: /Users/mis05/.ssh/

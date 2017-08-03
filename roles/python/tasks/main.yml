@@ -11,6 +11,10 @@
         - curl-devel
         - sqlite-devel
 
+  - name: Check if python is already installed
+    stat: path=/usr/local/bin/python3.6
+    register: python
+
   - name: create application directory (owned by application_user)
     file: path={{ application_deploy_to }} state=directory owner={{ application_user }} group={{ application_group }}
 
@@ -18,12 +22,14 @@
     get_url: # url=https://www.python.org/ftp/python/{{ python_version }}/Python-{{ python_version}}.tgz 
         url: "https://www.python.org/ftp/python/{{ python_version }}/Python-{{ python_version }}.tgz"
         dest: "{{ application_deploy_to }}/Python-{{ python_version }}.tar"
+    when: not python.stat.exists
 
   - name: Unpack Python
     unarchive:
         src: "{{ application_deploy_to }}/Python-{{ python_version }}.tar"
         dest: "{{ application_deploy_to }}"
         copy: no
+    when: not python.stat.exists
 
   - name: Grant permissions
     shell: cd "{{ application_deploy_to }}" && {{ item }}
@@ -37,4 +43,16 @@
         - ./configure --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
         - make
         - make altinstall
+    when: not python.stat.exists
 
+  - name: Check whether iPython already installed
+    stat: path=/usr/local/bin/ipython
+    register: ipython
+
+  - name: Install ipython
+    shell: python3.6 -m pip install ipython
+    when: python.stat.exists and not ipython.stat.exists
+
+  - name: Setup virtual environment
+    shell: python3.6 -m venv "{{ application_deploy_to }}/env_{{ application_name }}"
+    when: python.stat.exists
