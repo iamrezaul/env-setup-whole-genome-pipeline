@@ -54,5 +54,5 @@
     when: python.stat.exists and not ipython.stat.exists
 
   - name: Setup virtual environment
-    shell: python3.6 -m venv "{{ application_deploy_to }}/env_{{ application_name }}"
+    shell: python3.6 -m venv "{{ application_deploy_to }}/{{ application_venv_name }}"
     when: python.stat.exists
