@@ -1,0 +1,22 @@
+---
+  - name: Check if GATK already available
+    stat:
+        path: "{{ application_deploy_to }}/gatk-{{ gatk_version }}/GenomeAnalysisTK.jar"
+    register: gatk
+
+  - name: Create folder for GATK files
+    file:
+        path: "{{ application_deploy_to }}/gatk-{{ gatk_version }}"
+        owner: "{{ application_user }}"
+        group: "{{ application_group }}"
+        state: directory
+        mode: 0755
+    when: not gatk.stat.exists
+
+  - name: Download and unarchive gatk-{{ gatk_version }}
+    unarchive:
+        src: "https://software.broadinstitute.org/gatk/download/auth?package=GATK-archive&version=3.7-0-gcfedb67"
+        dest: "{{ application_deploy_to }}/gatk-{{ gatk_version }}"
+        validate_certs: no
+        remote_src: true
+    when: not gatk.stat.exists
