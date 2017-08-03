@@ -1,0 +1,32 @@
+---
+  - name: Check if BWA already available
+    stat:
+        path: "{{ application_deploy_to }}/bwa-{{ bwa_version }}/bwa"
+    register: bwa
+
+  - name: Download and unarchive bwa-{{ bwa_version }}
+    unarchive:
+        src: "https://sourceforge.net/projects/bio-bwa/files/bwa-{{ bwa_version }}.tar.bz2"
+        dest: "{{ application_deploy_to }}"
+        validate_certs: no
+        remote_src: true
+    when: not bwa.stat.exists
+
+  - name: Compile BWA
+    shell: cd "{{ application_deploy_to }}/bwa-{{ bwa_version }}" && {{ item }}
+    with_items:
+        - make
+    when: not bwa.stat.exists
+
+  - name: Grant permission to bwa script
+    file:
+        path: "{{ application_deploy_to }}/bwa-{{ bwa_version }}/bwa"
+        mode: 0755
+    when: bwa.stat.exists
+
+  - name: Create symlink to bwa script
+    file:
+        src: "{{ application_deploy_to }}/bwa-{{ bwa_version }}/bwa"
+        dest: "/usr/local/bin/bwa"
+        state: link
+    when: bwa.stat.exists
