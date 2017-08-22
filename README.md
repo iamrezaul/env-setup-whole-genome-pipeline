@@ -1,8 +1,10 @@
 Deployment Script
 =================
 
-  INSTALLER: The machine from where the deployment script will be run
-  SERVER: The main server where we want to deploy the project
+```
+  *INSTALLER* : The machine from where the deployment script will be run
+  *SERVER*    : The main server where we want to deploy the project
+```
 
 This setup requires `ansible` to be installed in the INSTALLER.
 If the machine has OSX and homebrew installed, please use this command:
