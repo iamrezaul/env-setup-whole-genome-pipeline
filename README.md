@@ -1,6 +1,8 @@
 Deployment Script
 =================
 
+*NOTE: There repo is not being maintained at the moment*
+
 **INSTALLER** : The machine from where the deployment script will be run
 
 **SERVER**    : The main server where we want to deploy the project
@@ -26,3 +28,9 @@ vdc4ml ansible_host=100.100.100.100 ansible_connection=ssh ansible_user=root
 
 The RSA key-pair need to be generated on **INSTALLER** and the public key needs
 to be copied to the `~/.ssh/authorized_keys` file on the **SERVER**.
+
+Execute the following command to prepare setup the **SERVER**
+
+```
+$ ansible-playbook env_setup_playbook.yml
+```
