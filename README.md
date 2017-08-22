@@ -2,6 +2,7 @@ Deployment Script
 =================
 
 *INSTALLER* : The machine from where the deployment script will be run
+
 *SERVER*    : The main server where we want to deploy the project
 
 This setup requires `ansible` to be installed in the INSTALLER.
