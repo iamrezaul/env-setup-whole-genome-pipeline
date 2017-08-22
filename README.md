@@ -1,7 +1,7 @@
 Deployment Script
 =================
 
-*NOTE: There repo is not being maintained at the moment*
+*NOTE: The repo is not being maintained at the moment*
 
 **INSTALLER** : The machine from where the deployment script will be run
 
