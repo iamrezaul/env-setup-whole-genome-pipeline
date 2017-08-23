@@ -29,7 +29,7 @@ vdc4ml ansible_host=100.100.100.100 ansible_connection=ssh ansible_user=root
 The RSA key-pair need to be generated on **INSTALLER** and the public key needs
 to be copied to the `~/.ssh/authorized_keys` file on the **SERVER**.
 
-Execute the following command to prepare setup the **SERVER**
+Execute the following command to setup the **SERVER**
 
 ```
 $ ansible-playbook env_setup_playbook.yml
