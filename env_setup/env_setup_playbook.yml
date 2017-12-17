@@ -2,12 +2,12 @@
   - hosts: vdc4ml
     become: yes
     vars:
-        application_user: root
-        application_group: root
+        application_user: vagrant
+        application_group: vagrant
         application_name: whole_genome_pipeline
         application_venv_name: env_whole_genome_pipeline
         application_deploy_to: /data/
-        python_version: 3.6.2
+        python_version: 3.6.3
         fastqc_version: 0.11.5
         samtools_version: 1.2
         picard_version: 1.119
