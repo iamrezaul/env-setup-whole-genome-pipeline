@@ -2,8 +2,8 @@
   - name: Ensure dependencies are installed
     yum: name={{ item }} state=present
     with_items:
-        - htop
         - ftp
+        - unzip
         - zlib-devel
         - bzip2-devel
         - openssl-devel
@@ -17,38 +17,32 @@
     stat: path=/usr/local/bin/python3.6
     register: python
 
-  - name: create application directory (owned by application_user)
-    file: path={{ application_deploy_to }} state=directory owner={{ application_user }} group={{ application_group }}
+  - name: Create application directory (owned by application_user)
+    file:
+        path: "{{ application_deploy_to }}"
+        state: directory
+        owner: "{{ application_user }}"
+        group: "{{ application_group }}"
 
   - name: Download & unpack Python
     unarchive:
         src: "https://www.python.org/ftp/python/{{ python_version }}/Python-{{ python_version }}.tgz"
         dest: "{{ application_deploy_to }}"
-        remote_src: true
+        remote_src: yes
+        owner: "{{ application_user }}"
+        group: "{{ application_user }}"
     when: not python.stat.exists
-
-  - name: Grant permissions
-    shell: cd "{{ application_deploy_to }}" && {{ item }}
-    with_items:
-        - chown -R {{ application_user }}:{{ application_group }} Python-{{ python_version }}
-        - chmod 755 -R Python-{{ python_version }}
 
   - name: Configure, compile and install Python
     shell: cd "{{ application_deploy_to }}/Python-{{ python_version }}" && {{ item }}
     with_items:
-        - ./configure --prefix=/usr/local --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
+        - ./configure --prefix=/usr/local
         - make
         - make altinstall
     when: not python.stat.exists
 
-  - name: Check whether iPython already installed
-    stat: path=/usr/local/bin/ipython
-    register: ipython
-
-  - name: Install ipython
-    shell: python3.6 -m pip install ipython
-    when: python.stat.exists and not ipython.stat.exists
-
-  - name: Setup virtual environment
-    shell: python3.6 -m venv "{{ application_deploy_to }}/{{ application_venv_name }}"
-    when: python.stat.exists
+  - name: Create virtualenv and Install iPython
+    pip:
+        name: ipython
+        virtualenv: "{{ application_deploy_to }}/{{ application_venv_name }}"
+        virtualenv_command: /usr/local/bin/python3.6 -m venv
